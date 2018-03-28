@@ -21,7 +21,7 @@
           <h1>Brainstorm</h1>
         </div>
       </div>
-      <div v-for="(data, index) in fakeData">{{data.title}}</div>
+      <div v-for="(data, index) in fakeData" class='ideaCloud'><h2>{{data.title}}</h2></div>
       <div v-bind:class="{'tripod': showAlert, 'rimple': showClass}"></div>
     </div>
   </div>
