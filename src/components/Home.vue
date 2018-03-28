@@ -7,13 +7,13 @@
         <div class='modal' v-bind:class="{'modalVisible': showAlert}">
           <div class='modalContent'>
             <button class='close' v-on:click='modalClose'>X</button>
-            <form class='basicForm'>
+            <form class='basicForm' @submit.prevent='updateData'>
               Add an idea:</br>
-              <textarea cols='42' rows='1' name='ideaTitle' placeholder='Got an idea...' class='ideaTitle' /></br></br>
+              <textarea cols='42' rows='1' name='ideaTitle' placeholder='Got an idea...' class='ideaTitle' v-model="newData.title" lazy/></br></br>
               Add a short paragraph with basic details:</br>
-              <textarea rows='10' cols='42' name='ideaDetail' placeholder='Add some details' class='ideaDetail' />
+              <textarea rows='10' cols='42' name='ideaDetail' placeholder='Add some details' class='ideaDetail' v-model='newData.sub' lazy/>
             </br></br>
-              <input type='submit' value='Submit' v-onclick='updateData'>
+              <input type='submit' value='Submit'>
             </form>
           </div>
         </div>
@@ -34,6 +34,10 @@ export default {
     return {
       showAlert: false,
       showClass: true,
+      newData: {
+        title: '',
+        sub: ''
+      },
       fakeData: [
         {
           title: 'Banking',
@@ -58,8 +62,13 @@ export default {
       this.showAlert = false
     },
 
-    updateDate() {
-      
+    updateData() {
+      this.fakeData.push(this.newData)
+      this.newData = {
+        title: '',
+        sub: ''
+      }
+      this.modalClose();
     }
   }
 };
