@@ -15,11 +15,10 @@
         </div>
       </div>
       <div class='ideaContainer centralIdea'>
-        <button class='plusButton' v-on:click='modalOpen'>+</button>
-        <!--Popup modal  -->
-
+        <button class='simpleButton' v-on:click='modalOpen'>+</button>
+        <button class='simpleButton editButton' v-on:click='editModalOpen'>*</button>
         <div class='ideaCloud'>
-          <h1>Brainstorm</h1>
+          <h1>{{this.mainIdea.title}}</h1>
         </div>
       </div>
       <div v-for="(data, index) in fakeData" class='ideaCloud'><h2>{{data.title}}</h2></div>
@@ -37,6 +36,10 @@ export default {
       newData: {
         title: '',
         sub: ''
+      },
+      mainIdea: {
+        title: 'Brainstorm-anon',
+        sub: 'sdfgsdfg'
       },
       fakeData: [
         {
@@ -69,6 +72,10 @@ export default {
         sub: ''
       }
       this.modalClose();
+    },
+
+    editModalOpen() {
+      console.log('poop')
     }
   }
 };
@@ -81,12 +88,9 @@ export default {
     height: 100vh;
     grid-template-columns: 33vw 33vw 33vw;
     grid-template-rows: 33vh 33vh 33vh;
-    cursor: grab;
   }
 
-  .mainContainer:active {
-    cursor: grabbing;
-  }
+
   .ideaContainer {
     position: relative;
     display: flex;
@@ -97,13 +101,28 @@ export default {
     flex: 1;
     align-items: center;
     justify-content: center;
-    border: 1px solid black;
   }
 
-  .plusButton {
+  .ideaCloud h1{
+    border: 1px solid black;
+    padding: 10px;
+  }
+
+  .ideaCloud h2{
+    border: 1px solid black;
+    padding: 5px;
+  }
+
+  .simpleButton {
     position: absolute;
     right: 0;
-    margin: 10px;
+    margin: 50px;
+    cursor: grab;
+  }
+
+  .editButton {
+    left: 0;
+
   }
 
   .modal {
@@ -146,6 +165,7 @@ export default {
 
   .close{
     margin: 10px;
+    cursor: grabbing;
   }
 
   .centralIdea {
