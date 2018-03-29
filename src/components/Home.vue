@@ -1,28 +1,28 @@
 <template>
   <div class="app">
     <div class='mainContainer'>
-      <div class='ideaContainer'>
+      <div class='modal' v-bind:class="{'modalVisible': showAlert}">
+        <div class='modalContent'>
+          <button class='close' v-on:click='modalClose'>X</button>
+          <form class='basicForm' @submit.prevent='updateData'>
+            Add an idea:</br>
+            <textarea cols='42' rows='1' name='ideaTitle' placeholder='Got an idea...' class='ideaTitle' v-model="newData.title" lazy/></br></br>
+            Add a short paragraph with basic details:</br>
+            <textarea rows='10' cols='42' name='ideaDetail' placeholder='Add some details' class='ideaDetail' v-model='newData.sub' lazy/>
+          </br></br>
+            <input type='submit' value='Submit'>
+          </form>
+        </div>
+      </div>
+      <div class='ideaContainer centralIdea'>
         <button class='plusButton' v-on:click='modalOpen'>+</button>
         <!--Popup modal  -->
-        <div class='modal' v-bind:class="{'modalVisible': showAlert}">
-          <div class='modalContent'>
-            <button class='close' v-on:click='modalClose'>X</button>
-            <form class='basicForm' @submit.prevent='updateData'>
-              Add an idea:</br>
-              <textarea cols='42' rows='1' name='ideaTitle' placeholder='Got an idea...' class='ideaTitle' v-model="newData.title" lazy/></br></br>
-              Add a short paragraph with basic details:</br>
-              <textarea rows='10' cols='42' name='ideaDetail' placeholder='Add some details' class='ideaDetail' v-model='newData.sub' lazy/>
-            </br></br>
-              <input type='submit' value='Submit'>
-            </form>
-          </div>
-        </div>
+
         <div class='ideaCloud'>
           <h1>Brainstorm</h1>
         </div>
       </div>
       <div v-for="(data, index) in fakeData" class='ideaCloud'><h2>{{data.title}}</h2></div>
-      <div v-bind:class="{'tripod': showAlert, 'rimple': showClass}"></div>
     </div>
   </div>
 </template>
@@ -146,6 +146,11 @@ export default {
 
   .close{
     margin: 10px;
+  }
+
+  .centralIdea {
+    grid-column-start: 2;
+    grid-row-start: 2;
   }
 
 </style>
