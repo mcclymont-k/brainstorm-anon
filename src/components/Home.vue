@@ -14,14 +14,16 @@
           </form>
         </div>
       </div>
-      <div class='ideaContainer centralIdea'>
+      <div class='ideaContainer centreIdea'>
         <button class='simpleButton' v-on:click='modalOpen'>+</button>
         <button class='simpleButton editButton' v-on:click='editModalOpen'>*</button>
         <div class='ideaCloud'>
-          <h1>{{this.mainIdea.title}}</h1>
+          <h1>{{this.centreIdea.title}}</h1>
         </div>
       </div>
-      <div v-for="(data, index) in fakeData" class='ideaCloud'><h2>{{data.title}}</h2></div>
+      <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud' v-bind:class='checkIndex(index)'>
+          <h2 v-on:click='selectNewIdea(data, index)'>{{data.title}}</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -33,27 +35,20 @@ export default {
     return {
       showAlert: false,
       showClass: true,
+      nestingNumber: 0,
       newData: {
         title: '',
-        sub: ''
+        sub: '',
+        subIdeas: []
       },
-      mainIdea: {
+      centreIdea: {
         title: 'Brainstorm-anon',
-        sub: 'sdfgsdfg'
+        sub: 'sdfgsdfg',
+        index: 0,
+        subIdeas: [
+          ]
       },
-      fakeData: [
-        {
-          title: 'Banking',
-          sub: 'ideas'
-        },
-        {
-          title: 'Accounts',
-          sub: 'ideas'
-        },
-        {
-          title: 'Clients',
-          sub: 'ideas'
-        }]
+      fakeData: {}
     };
   },
   methods: {
@@ -66,16 +61,38 @@ export default {
     },
 
     updateData() {
-      this.fakeData.push(this.newData)
+      this.centreIdea.subIdeas.push(this.newData)
       this.newData = {
         title: '',
-        sub: ''
+        sub: '',
+        subIdeas: ''
       }
       this.modalClose();
     },
 
     editModalOpen() {
-      console.log('poop')
+
+    },
+
+    selectNewIdea(data, index) {
+      this.nestingNumber +=1
+      this.centreIdea.index = index
+      if (this.nestingNumber === 1) {
+        this.fakeData = this.centreIdea
+        this.centreIdea = data
+      } else if (this.nestingNumber === 2) {
+        this.fakeData.subIdeas = this.centreIdea
+        this.centreIdea = data
+        console.log(this.fakeData.subIdeas)
+      } else { return}
+
+    },
+
+    checkIndex(index) {
+      this.index = index
+      if (index > 5){
+        return 'ideaCloudMed'
+      }
     }
   }
 };
@@ -168,9 +185,13 @@ export default {
     cursor: grabbing;
   }
 
-  .centralIdea {
+  .centreIdea {
     grid-column-start: 2;
     grid-row-start: 2;
+  }
+
+  .ideaCloudMed{
+    color: red;
   }
 
 </style>
