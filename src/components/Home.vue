@@ -78,11 +78,12 @@ export default {
     selectNewIdea(data, index) {
       this.nestingNumber +=1
       this.centreIdea.index = index
+      console.log(this.nestingNumber)
       if (this.nestingNumber === 1) {
         this.fakeData = this.centreIdea
         this.centreIdea = data
       } else if (this.nestingNumber === 2) {
-        this.fakeData.subIdeas = this.centreIdea
+        this.fakeData.subIdeas.push(this.centreIdea)
         this.centreIdea = data
       } else { return}
 
@@ -98,9 +99,11 @@ export default {
     goBack() {
       this.nestingNumber -= 1
       if (this.nestingNumber === 0) {
+        console.log(this.nestingNumber)
         this.centreIdea = this.fakeData
       } else if (this.nestingNumber === 1) {
-        this.centreIdea = this.fakeData.subIdeas
+        console.log(this.nestingNumber)
+        this.centreIdea = this.fakeData.subIdeas[0]
       }
     }
 
