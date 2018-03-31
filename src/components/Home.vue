@@ -24,6 +24,7 @@
       <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud' v-bind:class='checkIndex(index)'>
           <h2 v-on:click='selectNewIdea(data, index)'>{{data.title}}</h2>
       </div>
+      <button v-on:click='goBack' class='backwardsButton'><</button>
     </div>
   </div>
 </template>
@@ -65,7 +66,7 @@ export default {
       this.newData = {
         title: '',
         sub: '',
-        subIdeas: ''
+        subIdeas: []
       }
       this.modalClose();
     },
@@ -83,7 +84,6 @@ export default {
       } else if (this.nestingNumber === 2) {
         this.fakeData.subIdeas = this.centreIdea
         this.centreIdea = data
-        console.log(this.fakeData.subIdeas)
       } else { return}
 
     },
@@ -93,7 +93,17 @@ export default {
       if (index > 5){
         return 'ideaCloudMed'
       }
+    },
+
+    goBack() {
+      this.nestingNumber -= 1
+      if (this.nestingNumber === 0) {
+        this.centreIdea = this.fakeData
+      } else if (this.nestingNumber === 1) {
+        this.centreIdea = this.fakeData.subIdeas
+      }
     }
+
   }
 };
 </script>
@@ -107,6 +117,9 @@ export default {
     grid-template-rows: 33vh 33vh 33vh;
   }
 
+  .backwardsButton {
+    position: absolute;
+  }
 
   .ideaContainer {
     position: relative;
