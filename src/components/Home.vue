@@ -4,13 +4,13 @@
       <div class='modal' v-bind:class="{'modalVisible': showAlert}">
         <div class='modalContent'>
           <button class='close' v-on:click='modalClose'>X</button>
-          <form class='basicForm' @submit.prevent='updateData'>
+          <form class='basicForm' @submit.prevent=''>
             Add an idea:</br>
             <textarea cols='42' rows='1' name='ideaTitle' placeholder='Got an idea...' class='ideaTitle' v-model="newData.title" lazy/></br></br>
             Add a short paragraph with basic details:</br>
             <textarea rows='10' cols='42' name='ideaDetail' placeholder='Add some details' class='ideaDetail' v-model='newData.sub' lazy/>
           </br></br>
-            <input type='submit' value='Submit'>
+            <input type='submit' value='Submit' v-on:click='updateData'>
           </form>
         </div>
       </div>
@@ -68,11 +68,15 @@ export default {
     },
 
     updateData() {
-      this.centreIdea.subIdeas.push(this.newData)
+      let subIdeas = this.centreIdea.subIdeas
+      subIdeas.push(this.newData)
       this.newData = {
         title: '',
         sub: '',
         subIdeas: []
+      }
+      if (this.nestingNumber === 0) {
+        this.fakeData = this.centreIdea
       }
       this.modalClose();
     },
@@ -85,10 +89,10 @@ export default {
       this.nestingNumber +=1
       if (this.nestingNumber === 1) {
         this.indexWatch = index
-        this.fakeData = this.centreIdea
+        this.centreIdea = {}
         this.centreIdea = data
       } else if (this.nestingNumber === 2) {
-        this.fakeData.subIdeas.push(this.centreIdea)
+        this.centreIdea = {}
         this.centreIdea = data
       } else { return}
 
@@ -96,6 +100,7 @@ export default {
 
     goBack() {
       this.nestingNumber -= 1
+      console.log(this.fakeData.subIdeas)
       if (this.nestingNumber < 0) {
         this.nestingNumber += 1
       } else if (this.nestingNumber === 0) {
@@ -105,7 +110,7 @@ export default {
       }
     }
   }
-  
+
 };
 </script>
 
