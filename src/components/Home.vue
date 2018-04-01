@@ -21,7 +21,7 @@
           <h1>{{this.centreIdea.title}}</h1>
         </div>
       </div>
-      <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud' v-bind:class='checkIndex(index)'>
+      <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud'>
           <h2 v-on:click='selectNewIdea(data, index)'>{{data.title}}</h2>
       </div>
       <button v-on:click='goBack' class='backwardsButton'><</button>
@@ -37,6 +37,7 @@ export default {
       showAlert: false,
       showClass: true,
       nestingNumber: 0,
+      indexWatch: 0,
       newData: {
         title: '',
         sub: '',
@@ -53,8 +54,13 @@ export default {
     };
   },
   methods: {
+
     modalOpen() {
-      this.showAlert = true
+
+      if (this.centreIdea.subIdeas.length === 8) {
+        console.log("Too many arguments")
+      } else {
+      this.showAlert = true}
     },
 
     modalClose() {
@@ -77,9 +83,8 @@ export default {
 
     selectNewIdea(data, index) {
       this.nestingNumber +=1
-      this.centreIdea.index = index
-      console.log(this.nestingNumber)
       if (this.nestingNumber === 1) {
+        this.indexWatch = index
         this.fakeData = this.centreIdea
         this.centreIdea = data
       } else if (this.nestingNumber === 2) {
@@ -89,25 +94,18 @@ export default {
 
     },
 
-    checkIndex(index) {
-      this.index = index
-      if (index > 5){
-        return 'ideaCloudMed'
-      }
-    },
-
     goBack() {
       this.nestingNumber -= 1
-      if (this.nestingNumber === 0) {
-        console.log(this.nestingNumber)
+      if (this.nestingNumber < 0) {
+        this.nestingNumber += 1
+      } else if (this.nestingNumber === 0) {
         this.centreIdea = this.fakeData
       } else if (this.nestingNumber === 1) {
-        console.log(this.nestingNumber)
-        this.centreIdea = this.fakeData.subIdeas[0]
+        this.centreIdea = this.fakeData.subIdeas[this.indexWatch]
       }
     }
-
   }
+  
 };
 </script>
 
