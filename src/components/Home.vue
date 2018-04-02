@@ -94,7 +94,7 @@ export default {
       } else if (this.nestingNumber === 2) {
         this.centreIdea = {}
         this.centreIdea = data
-      } else { return}
+      } else {this.nestingNumber -=1}
 
     },
 
@@ -137,16 +137,25 @@ export default {
     flex: 1;
     align-items: center;
     justify-content: center;
+
   }
 
   .ideaCloud h1{
     border: 1px solid black;
     padding: 10px;
+    font-size: 1.5vw;
+    max-height: 200px;
+    overflow: auto;
+
   }
 
   .ideaCloud h2{
     border: 1px solid black;
     padding: 5px;
+    margin: 20px;
+    font-size: 1vw;
+    max-height: 250px;
+    overflow: auto;
   }
 
   .simpleButton {
@@ -211,6 +220,31 @@ export default {
 
   .ideaCloudMed{
     color: red;
+  }
+
+  @media screen and (max-width: 1000px){
+    .mainContainer {
+      grid-template-columns: 100vw;
+      grid-template-rows: 25vh 25vh 25vh 25vh 25vh 25vh 25vh 25vh 25vh 25vh;
+      grid-auto-flow: column;
+    }
+
+    .ideaCloud {
+      border-bottom: 1px solid black;
+      margin: 20px;
+    }
+
+    .ideaCloud h2 {
+      font-size: 2.5vw;
+    }
+
+    .ideaCloud h1 {
+      font-size: 3vw;
+    }
+    .centreIdea {
+      grid-column-start: 1;
+      grid-row-start: 1;
+    }
   }
 
 </style>
