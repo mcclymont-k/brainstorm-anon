@@ -17,12 +17,16 @@
       <div class='ideaContainer centreIdea'>
         <button class='simpleButton' v-on:click='modalOpen'>+</button>
         <button class='simpleButton editButton' v-on:click='editModalOpen'>*</button>
-        <div class='ideaCloud'>
+
           <h1>{{this.centreIdea.title}}</h1>
-        </div>
+
       </div>
       <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud'>
-          <h2 v-on:click='selectNewIdea(data, index)'>{{data.title}}</h2>
+          <h2 v-on:dblclick='selectNewIdea(data, index)'>{{data.title}}</h2>
+          <div v-on:click="openInfo(index)">
+            <i class="fas fa-arrow-circle-down" ></i>
+            <div v-bind:class='classAdd(index)'>{{data.sub}}</div>
+          </div>
       </div>
       <button v-on:click='goBack' class='backwardsButton'><</button>
     </div>
@@ -34,6 +38,7 @@ export default {
   name: 'Home',
   data() {
     return {
+      showInfo: false,
       showAlert: false,
       showClass: true,
       nestingNumber: 0,
@@ -95,6 +100,13 @@ export default {
         this.centreIdea = {}
         this.centreIdea = data
       } else {this.nestingNumber -=1}
+    },
+
+    openInfo(index) {
+      const currentTab = '.infoTab' + index
+      let selectDiv = document.querySelector(currentTab)
+      console.log(selectDiv)
+      selectDiv.classList.toggle('infoTabOpen')
 
     },
 
@@ -108,6 +120,11 @@ export default {
       } else if (this.nestingNumber === 1) {
         this.centreIdea = this.fakeData.subIdeas[this.indexWatch]
       }
+    },
+
+    classAdd(index) {
+      const currentIndex = 'infoTab' + index
+      return 'infoTab ' + currentIndex
     }
   }
 
@@ -115,9 +132,13 @@ export default {
 </script>
 
 <style scoped>
+  body {
+    margin: 0;
+    border: none
+  }
+
   .mainContainer {
     display: grid;
-    width: 100vw;
     height: 100vh;
     grid-template-columns: 33vw 33vw 33vw;
     grid-template-rows: 33vh 33vh 33vh;
@@ -125,6 +146,11 @@ export default {
 
   .backwardsButton {
     position: absolute;
+  }
+
+  .fa-arrow-circle-down:hover {
+    color:red;
+    cursor: pointer;
   }
 
   .ideaContainer {
@@ -137,7 +163,8 @@ export default {
     flex: 1;
     align-items: center;
     justify-content: center;
-
+    flex-direction: column;
+    position: relative;
   }
 
   .ideaCloud h1{
@@ -146,7 +173,7 @@ export default {
     font-size: 1.5vw;
     max-height: 200px;
     overflow: auto;
-
+    user-select: none;
   }
 
   .ideaCloud h2{
@@ -156,18 +183,48 @@ export default {
     font-size: 1vw;
     max-height: 250px;
     overflow: auto;
+    user-select: none;
   }
 
   .simpleButton {
     position: absolute;
     right: 0;
+    top: 0;
     margin: 50px;
-    cursor: grab;
+    cursor: pointer;
+  }
+
+  .close {
+    cursor: pointer;
+    margin: 10px;
+  }
+
+  .infoTab {
+    display: none;
+    border: none;
+  }
+
+  .infoTabOpen {
+    display: block;
+    position: absolute;
+    background: gold;
+    min-height: 200px;
+    width: 100%;
+    top: 14em;
+    overflow-wrap: break-word;
+    left: 0;
+    z-index: 1;
+    border-bottom:10px solid white;
+  }
+
+  .infoTabOpen h2 {
+    border: none !important;
+    font-size: 0.75vw;
   }
 
   .editButton {
     left: 0;
-
+    top: 0;
   }
 
   .modal {
@@ -208,14 +265,15 @@ export default {
     background-color: gold;
   }
 
-  .close{
-    margin: 10px;
-    cursor: grabbing;
-  }
-
   .centreIdea {
     grid-column-start: 2;
     grid-row-start: 2;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border:1px solid black
   }
 
   .ideaCloudMed{
@@ -225,13 +283,15 @@ export default {
   @media screen and (max-width: 1000px){
     .mainContainer {
       grid-template-columns: 100vw;
-      grid-template-rows: 25vh 25vh 25vh 25vh 25vh 25vh 25vh 25vh 25vh 25vh;
+      grid-template-rows: repeat(9, 300px);
       grid-auto-flow: column;
     }
 
     .ideaCloud {
       border-bottom: 1px solid black;
       margin: 20px;
+      display:flex;
+
     }
 
     .ideaCloud h2 {
