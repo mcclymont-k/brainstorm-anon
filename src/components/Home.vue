@@ -140,8 +140,9 @@ export default {
   .mainContainer {
     display: grid;
     height: 100vh;
-    grid-template-columns: 33vw 33vw 33vw;
-    grid-template-rows: 33vh 33vh 33vh;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 10px;
   }
 
   .backwardsButton {
