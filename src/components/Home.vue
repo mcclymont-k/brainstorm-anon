@@ -2,7 +2,7 @@
   <div class="app">
     <div class='mainContainer'>
       <div class='modal' v-bind:class="{'modalVisible': showAlert}">
-        <div class='modalContent'>
+        <div class='modalContent' v-bind:class="{'modalContentVisible': showAlert}">
           <button class='close' v-on:click='modalClose'>X</button>
           <form class='basicForm' @submit.prevent=''>
             Add an idea:</br>
@@ -245,9 +245,17 @@ export default {
     justify-content: center;
   }
 
+  .modalVisible:hover .modalContent {
+    transform: translateY(0);
+
+  }
+
   .modalContent {
     background-color: gold;
+    transform: translateY(200%);
+    transition: 0.5s;
   }
+
 
   .ideaDetail {
     word-break: break-word;
@@ -306,6 +314,8 @@ export default {
       grid-column-start: 1;
       grid-row-start: 1;
     }
+
   }
+
 
 </style>
