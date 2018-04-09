@@ -21,7 +21,7 @@
           <h1>This will delete this branch and all information contained inside</h1>
           <h2>Continue?</h2>
           <div>
-            <button v-on:click='deleteIdea(index)'>Yes</button>
+            <button v-on:click='deleteIdea()'>Yes</button>
             <button v-on:click='modalClose'>No</button>
           </div>
         </div>
@@ -45,14 +45,26 @@
         <h1>{{this.centreIdea.title}}</h1>
       </div>
       <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud'>
-          <button class='deleteButton' v-on:click='modalOpen(); closeWarning()'>x</button>
-          <h2 v-on:dblclick='selectNewIdea(data, index)'>{{data.title}}</h2>
-          <div v-on:click="openInfo(index, data)">
-            <i class="fas fa-arrow-circle-down" ></i>
-            <div v-bind:class='classAdd(index)'>{{data.sub}}</div>
+          <div class='titleContainer' v-on:dblclick='selectNewIdea(data, index)'>
+            <button class='deleteButton' v-on:click='modalOpen(); closeWarning(index)'>x</button>
+            <h2>{{data.title}}</h2>
+            <div v-on:click="openInfo(index, data)">
+              <i class="fas fa-arrow-circle-down" ></i>
+              <div v-bind:class='classAdd(index)'>{{data.sub}}</div>
+            </div>
           </div>
+
       </div>
       <button v-on:click='goBack' class='backwardsButton'><</button>
+      <button v-on:click='openHelpTab' class='helpButton'>?</button>
+      <div class='helpPage' :class="{'helpPageOpen': helpAlert}">
+        Welcome to Brainstorm-anon.
+        <br/><br/>- Start by using the * button to change the central idea.
+        <br/><br/>- You can add ideas by using the + button on the central box.
+        <br/><br/>- To read the information on the sub ideas click the arrow underneath its title.
+        <br/></br>- To delve into the brainstorm, double click on a surrounding idea to bring it to the center.
+        <br/></br>- Use the < button to move back to the main ideas.
+      </div>
     </div>
   </div>
 </template>
@@ -66,6 +78,7 @@ export default {
       addAlert: false,
       closeAlert: false,
       editAlert: false,
+      helpAlert: false,
       nestingNumber: 0,
       indexWatch: 0,
       newData: {
@@ -86,6 +99,10 @@ export default {
 
   methods: {
 
+    openHelpTab() {
+      this.helpAlert ? this.helpAlert = false : this.helpAlert = true
+    },
+
     modalOpen() {
       if (this.centreIdea.subIdeas.length === 8) {
         console.log("Too many arguments")
@@ -97,8 +114,9 @@ export default {
       this.addAlert = true;
     },
 
-    closeWarning() {
+    closeWarning(index) {
       this.closeAlert = true
+      this.indexWatch = index
     },
 
     modalClose() {
@@ -108,7 +126,8 @@ export default {
       this.editAlert = false
     },
 
-    deleteIdea(index) {
+    deleteIdea() {
+      let index = this.indexWatch
       this.showAlert = true
       this.centreIdea.subIdeas.splice(index, 1)
       this.modalClose()
@@ -152,7 +171,6 @@ export default {
 
     goBack() {
       this.nestingNumber -= 1
-      console.log(this.fakeData.subIdeas)
       if (this.nestingNumber < 0) {
         this.nestingNumber += 1
       } else if (this.nestingNumber === 0) {
@@ -193,9 +211,43 @@ export default {
     margin: 20px;
   }
 
-  .fa-arrow-circle-down:hover {
-    color: #e1c00d;
+  .backwardsButton:hover {
     cursor: pointer;
+  }
+
+  .helpButton {
+    position: absolute;
+    margin: 20px;
+    right: 10px;
+  }
+
+  .helpPage {
+    visibility: hidden;
+    width: 300px;
+    height: auto;
+    border: 2px solid gold;
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    padding: 5px;
+    font-size: 13px;
+    z-index: 3;
+    background-color: white;
+  }
+
+  .helpPageOpen {
+    visibility: visible;
+  }
+
+  .helpButton:hover {
+    cursor: pointer;
+  }
+
+  .fa-arrow-circle-down:hover {
+    background-color: #e1c00d;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
   }
 
   .invisibleModal{
@@ -226,24 +278,33 @@ export default {
     position: relative;
   }
 
-  .ideaCloud h1 {
-    border: 1px solid black;
-    padding: 10px;
-    font-size: 1.5vw;
-    max-height: 200px;
-    overflow: auto;
-    user-select: none;
-  }
-
-
   .ideaCloud h2 {
-    border: 1px solid black;
     padding: 5px;
     margin: 20px;
     font-size: 1vw;
     max-height: 250px;
     overflow: auto;
     user-select: none;
+  }
+
+  .titleContainer {
+    border: 2px solid black;
+    display: grid;
+    min-height: 150px;
+    width: 400px;
+    position: relative;
+    align-items: center;
+    justify-items: center;
+    transition: 0.3s;
+  }
+
+  .titleContainer h2 {
+    transition: 0.5s;
+  }
+
+  .titleContainer:hover {
+    cursor: pointer;
+    border: 2px solid #e1c00d;
   }
 
   .simpleButton {
@@ -273,7 +334,7 @@ export default {
     background: gold;
     min-height: 200px;
     width: 90%;
-    top: 14em;
+    top: 10em;
     overflow-wrap: break-word;
     left: 0;
     z-index: 1;
@@ -376,8 +437,10 @@ export default {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    border:1px solid black
+    border: 2px solid #e1c00d;
   }
+
+
 
   @media screen and (max-width: 1000px){
     .mainContainer {
@@ -395,10 +458,6 @@ export default {
 
     .ideaCloud h2 {
       font-size: 2.5vw;
-    }
-
-    .ideaCloud h1 {
-      font-size: 3vw;
     }
 
     .centreIdea {
