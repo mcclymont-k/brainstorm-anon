@@ -1,8 +1,10 @@
 <template>
   <div class="app">
     <div class='mainContainer'>
+      <!-- Modal section -->
       <div class='modal' v-bind:class="{'modalVisible': showAlert}">
-        <div class='modalContent' v-bind:class="{'modalContentVisible': showAlert}">
+        <!-- The add content modal for adding new sub ideas. -->
+        <div class='invisibleModal' v-bind:class="{'modalAddContent': addAlert}">
           <button class='close' v-on:click='modalClose'>X</button>
           <form class='basicForm' @submit.prevent=''>
             Add an idea:</br>
@@ -13,15 +15,25 @@
             <input type='submit' value='Submit' v-on:click='updateData'>
           </form>
         </div>
+        <!-- The close modal for confirming the sub idea deletion -->
+        <div class='invisibleModal' v-bind:class="{'closeModal': closeAlert}">
+          <button class='close' v-on:click='modalClose'>X</button>
+          <h1>This will delete this branch and all information contained inside</h1>
+          <h2>Continue?</h2>
+          <div>
+            <button v-on:click='deleteIdea(index)'>Yes</button>
+            <button v-on:click='modalClose'>No</button>
+          </div>
+        </div>
       </div>
+      <!--Main container for the brainstorm  -->
       <div class='ideaContainer centreIdea'>
-        <button class='simpleButton' v-on:click='modalOpen'>+</button>
+        <button class='simpleButton' v-on:click='modalOpen(); addIdea()'>+</button>
         <button class='simpleButton editButton' v-on:click='editModalOpen'>*</button>
-
-          <h1>{{this.centreIdea.title}}</h1>
-
+        <h1>{{this.centreIdea.title}}</h1>
       </div>
       <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud'>
+          <button class='deleteButton' v-on:click='modalOpen(); closeWarning()'>x</button>
           <h2 v-on:dblclick='selectNewIdea(data, index)'>{{data.title}}</h2>
           <div v-on:click="openInfo(index)">
             <i class="fas fa-arrow-circle-down" ></i>
@@ -40,6 +52,8 @@ export default {
     return {
       showInfo: false,
       showAlert: false,
+      addAlert: false,
+      closeAlert: false,
       showClass: true,
       nestingNumber: 0,
       indexWatch: 0,
@@ -61,15 +75,30 @@ export default {
   methods: {
 
     modalOpen() {
-
       if (this.centreIdea.subIdeas.length === 8) {
         console.log("Too many arguments")
       } else {
       this.showAlert = true}
     },
 
+    addIdea() {
+      this.addAlert = true;
+    },
+
+    closeWarning() {
+      this.closeAlert = true;
+    },
+
     modalClose() {
-      this.showAlert = false
+      this.showAlert = false;
+      this.addAlert = false;
+      this.closeAlert = false;
+    },
+
+    deleteIdea(index) {
+      this.showAlert = true
+      this.centreIdea.subIdeas.splice(index, 1)
+      this.modalClose()
     },
 
     updateData() {
@@ -127,7 +156,6 @@ export default {
       return 'infoTab ' + currentIndex
     }
   }
-
 };
 </script>
 
@@ -154,6 +182,10 @@ export default {
     cursor: pointer;
   }
 
+  .invisibleModal{
+    display: none;
+  }
+
   .ideaContainer {
     position: relative;
     display: flex;
@@ -168,7 +200,7 @@ export default {
     position: relative;
   }
 
-  .ideaCloud h1{
+  .ideaCloud h1 {
     border: 1px solid black;
     padding: 10px;
     font-size: 1.5vw;
@@ -177,7 +209,7 @@ export default {
     user-select: none;
   }
 
-  .ideaCloud h2{
+  .ideaCloud h2 {
     border: 1px solid black;
     padding: 5px;
     margin: 20px;
@@ -198,6 +230,12 @@ export default {
   .close {
     cursor: pointer;
     margin: 10px;
+  }
+
+  .deleteButton {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   .infoTab {
@@ -245,24 +283,48 @@ export default {
     justify-content: center;
   }
 
-  .modalVisible:hover .modalContent {
+  .modalVisible:hover .modalAddContent {
     transform: translateY(0);
 
   }
 
-  .modalContent {
+  .modalAddContent {
+    display: block;
     background-color: gold;
     transform: translateY(200%);
     transition: 0.5s;
   }
 
+  .closeModal {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    width: 300px;
+    height: 400px;
+    background-color: gold;
+    text-align: center;
+  }
+
+  .closeModal h1 {
+    font-size: 20px;
+  }
+
+  .closeModal h2 {
+    font-size: 15px;
+  }
+
+  .closeModal button {
+    width: auto;
+  }
 
   .ideaDetail {
     word-break: break-word;
     resize: none;
+    width: 100%;
   }
 
   .ideaTitle {
+    width: 100%;
     word-break: break-word;
     resize: none;
   }
@@ -291,7 +353,7 @@ export default {
 
   @media screen and (max-width: 1000px){
     .mainContainer {
-      grid-template-columns: 100vw;
+      grid-template-columns: 1fr;
       grid-template-rows: repeat(9, 300px);
       grid-auto-flow: column;
     }
@@ -310,12 +372,10 @@ export default {
     .ideaCloud h1 {
       font-size: 3vw;
     }
+
     .centreIdea {
       grid-column-start: 1;
       grid-row-start: 1;
     }
-
   }
-
-
 </style>
