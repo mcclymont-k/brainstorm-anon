@@ -4,20 +4,20 @@
       <!-- Modal section -->
       <div class='modal' v-bind:class="{'modalVisible': showAlert}">
         <!-- The add content modal for adding new sub ideas. -->
-        <div class='invisibleModal' v-bind:class="{'modalAddContent': addAlert}">
-          <button class='close' v-on:click='modalClose'>X</button>
+        <div class='invisibleModal' v-bind:class="{'modalAddContent modalSlide': addAlert}">
+          <button class='closeButton' v-on:click='modalClose'>X</button>
           <form class='basicForm' @submit.prevent=''>
             Add an idea:</br>
             <textarea cols='42' rows='1' name='ideaTitle' placeholder='Got an idea...' class='ideaTitle' v-model="newData.title" lazy/></br></br>
             Add a short paragraph with basic details:</br>
             <textarea rows='10' cols='42' name='ideaDetail' placeholder='Add some details' class='ideaDetail' v-model='newData.sub' lazy/>
           </br></br>
-            <input type='submit' value='Submit' v-on:click='updateData'>
+            <input class=button type='submit' value='Submit' v-on:click='updateData'>
           </form>
         </div>
         <!-- The close modal for confirming the sub idea deletion -->
-        <div class='invisibleModal' v-bind:class="{'closeModal': closeAlert}">
-          <button class='close' v-on:click='modalClose'>X</button>
+        <div class='invisibleModal' v-bind:class="{'closeModal modalSlide': closeAlert}">
+          <button class='closeButton' v-on:click='modalClose'>X</button>
           <h1>This will delete this branch and all information contained inside</h1>
           <h2>Continue?</h2>
           <div>
@@ -25,17 +25,29 @@
             <button v-on:click='modalClose'>No</button>
           </div>
         </div>
+        <!-- Edit modal for editing the main idea -->
+        <div class='invisibleModal' v-bind:class="{'editModal modalSlide': editAlert}">
+          <button class='closeButton' v-on:click='modalClose'>X</button>
+          <form clss='basicForm' @submit.prevent=''>
+            Edit the central idea:</br>
+            <textarea cols='42' rows='1' name='ideaTitle' :placeholder=centreIdea.title class='ideaTitle' v-model="centreIdea.title" lazy/></br></br>
+            Ammend the details.</br>
+            <textarea rows='10' cols='42' name='ideaDetail' :placeholder=centreIdea.sub class='ideaDetail' v-model='centreIdea.sub' lazy/>
+          </br></br>
+            <input class=button type='submit' value='Submit' v-on:click='modalClose'>
+          </form>
+        </div>
       </div>
       <!--Main container for the brainstorm  -->
-      <div class='ideaContainer centreIdea'>
+      <div class='centreIdea'>
         <button class='simpleButton' v-on:click='modalOpen(); addIdea()'>+</button>
-        <button class='simpleButton editButton' v-on:click='editModalOpen'>*</button>
+        <button class='simpleButton editButton' v-on:click='modalOpen(); editModalOpen()'>*</button>
         <h1>{{this.centreIdea.title}}</h1>
       </div>
       <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud'>
           <button class='deleteButton' v-on:click='modalOpen(); closeWarning()'>x</button>
           <h2 v-on:dblclick='selectNewIdea(data, index)'>{{data.title}}</h2>
-          <div v-on:click="openInfo(index)">
+          <div v-on:click="openInfo(index, data)">
             <i class="fas fa-arrow-circle-down" ></i>
             <div v-bind:class='classAdd(index)'>{{data.sub}}</div>
           </div>
@@ -50,11 +62,10 @@ export default {
   name: 'Home',
   data() {
     return {
-      showInfo: false,
       showAlert: false,
       addAlert: false,
       closeAlert: false,
-      showClass: true,
+      editAlert: false,
       nestingNumber: 0,
       indexWatch: 0,
       newData: {
@@ -72,6 +83,7 @@ export default {
       fakeData: {}
     };
   },
+
   methods: {
 
     modalOpen() {
@@ -86,13 +98,14 @@ export default {
     },
 
     closeWarning() {
-      this.closeAlert = true;
+      this.closeAlert = true
     },
 
     modalClose() {
-      this.showAlert = false;
-      this.addAlert = false;
-      this.closeAlert = false;
+      this.showAlert = false
+      this.addAlert = false
+      this.closeAlert = false
+      this.editAlert = false
     },
 
     deleteIdea(index) {
@@ -116,7 +129,7 @@ export default {
     },
 
     editModalOpen() {
-
+      this.editAlert = true
     },
 
     selectNewIdea(data, index) {
@@ -131,12 +144,10 @@ export default {
       } else {this.nestingNumber -=1}
     },
 
-    openInfo(index) {
+    openInfo(index, data) {
       const currentTab = '.infoTab' + index
       let selectDiv = document.querySelector(currentTab)
-      console.log(selectDiv)
       selectDiv.classList.toggle('infoTabOpen')
-
     },
 
     goBack() {
@@ -154,19 +165,23 @@ export default {
     classAdd(index) {
       const currentIndex = 'infoTab' + index
       return 'infoTab ' + currentIndex
-    }
+    },
   }
 };
 </script>
 
 <style scoped>
-  body {
-    margin: 0;
-    border: none
+
+  button {
+    background-color: rgba(0,0,0);
+    color: white;
+    border: 1px solid black;
+    border-radius: 15%;
   }
 
   .mainContainer {
     display: grid;
+    grid-gap: 10px;
     height: 100vh;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -175,10 +190,11 @@ export default {
 
   .backwardsButton {
     position: absolute;
+    margin: 20px;
   }
 
   .fa-arrow-circle-down:hover {
-    color:red;
+    color: #e1c00d;
     cursor: pointer;
   }
 
@@ -186,9 +202,19 @@ export default {
     display: none;
   }
 
-  .ideaContainer {
-    position: relative;
-    display: flex;
+  .editModal {
+    display: grid;
+    background-color: gold;
+    transition: 0.5s;
+    padding: 20px;
+    padding-top: 30px;
+  }
+
+  .closeButton{
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 5px;
   }
 
   .ideaCloud {
@@ -209,6 +235,7 @@ export default {
     user-select: none;
   }
 
+
   .ideaCloud h2 {
     border: 1px solid black;
     padding: 5px;
@@ -227,20 +254,17 @@ export default {
     cursor: pointer;
   }
 
-  .close {
-    cursor: pointer;
-    margin: 10px;
-  }
-
   .deleteButton {
     position: absolute;
     top: 0;
     right: 0;
+    margin: 20px;
   }
 
   .infoTab {
     display: none;
     border: none;
+    padding: 20px;
   }
 
   .infoTabOpen {
@@ -248,7 +272,7 @@ export default {
     position: absolute;
     background: gold;
     min-height: 200px;
-    width: 100%;
+    width: 90%;
     top: 14em;
     overflow-wrap: break-word;
     left: 0;
@@ -273,8 +297,12 @@ export default {
   .modalVisible {
     display: flex;
     flex-direction: column;
-    position: fixed;
-    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
     width: 100%;
     height: 100%;
     background-color: rgb(0,0,0);
@@ -283,15 +311,18 @@ export default {
     justify-content: center;
   }
 
-  .modalVisible:hover .modalAddContent {
+  .modalVisible:hover .modalSlide {
     transform: translateY(0);
 
   }
 
-  .modalAddContent {
-    display: block;
-    background-color: gold;
+  .modalSlide {
     transform: translateY(200%);
+  }
+
+  .modalAddContent {
+    display: grid;
+    background-color: gold;
     transition: 0.5s;
   }
 
@@ -303,6 +334,7 @@ export default {
     height: 400px;
     background-color: gold;
     text-align: center;
+    transition: 0.5s;
   }
 
   .closeModal h1 {
@@ -339,16 +371,12 @@ export default {
   .centreIdea {
     grid-column-start: 2;
     grid-row-start: 2;
-    display: flex;
-    flex: 1;
+    display: grid;
+    position: relative;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     border:1px solid black
-  }
-
-  .ideaCloudMed{
-    color: red;
   }
 
   @media screen and (max-width: 1000px){
