@@ -37,6 +37,7 @@
             <input class=button type='submit' value='Submit' v-on:click='modalClose'>
           </form>
         </div>
+        <!-- Modal to warn about too many sub ideas -->
         <div class='invisibleModal' v-bind:class="{'lengthModal modalSlide': lengthAlert}">
           <button class='closeButton' v-on:click='modalClose'>X</button>
           <h1><br/>You may only have 8 arguments per centre idea.<br/><br/> Expand the brainstorm by creating new ideas within each sub idea.</h1>
@@ -461,8 +462,6 @@ export default {
     flex-direction: column;
     border: 2px solid #e1c00d;
   }
-
-
 
   @media screen and (max-width: 1097px){
     .mainContainer {
