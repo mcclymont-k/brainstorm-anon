@@ -37,6 +37,10 @@
             <input class=button type='submit' value='Submit' v-on:click='modalClose'>
           </form>
         </div>
+        <div class='invisibleModal' v-bind:class="{'lengthModal modalSlide': lengthAlert}">
+          <button class='closeButton' v-on:click='modalClose'>X</button>
+          <h1><br/>You may only have 8 arguments per centre idea.<br/><br/> Expand the brainstorm by creating new ideas within each sub idea.</h1>
+        </div>
       </div>
       <!--Main container for the brainstorm  -->
       <div class='centreIdea'>
@@ -79,6 +83,7 @@ export default {
       closeAlert: false,
       editAlert: false,
       helpAlert: false,
+      lengthAlert: false,
       nestingNumber: 0,
       indexWatch: 0,
       newData: {
@@ -104,14 +109,15 @@ export default {
     },
 
     modalOpen() {
-      if (this.centreIdea.subIdeas.length === 8) {
-        console.log("Too many arguments")
-      } else {
-      this.showAlert = true}
+      this.showAlert = true
     },
 
     addIdea() {
-      this.addAlert = true;
+      if (this.centreIdea.subIdeas.length === 8) {
+        this.lengthAlert = true
+      } else {
+        this.addAlert = true;
+      }
     },
 
     closeWarning(index) {
@@ -124,6 +130,7 @@ export default {
       this.addAlert = false
       this.closeAlert = false
       this.editAlert = false
+      this.lengthAlert = false
     },
 
     deleteIdea() {
@@ -188,8 +195,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+  body {
+    margin: 0 ;
+  }
+</style>
 
+<style scoped>
   button {
     background-color: rgba(0,0,0);
     color: white;
@@ -260,6 +272,16 @@ export default {
     transition: 0.5s;
     padding: 20px;
     padding-top: 30px;
+  }
+
+  .lengthModal {
+    font-size: 0.6em;
+    display: grid;
+    transition: 0.5s;
+    height: 400px;
+    width: 250px;
+    background-color: gold;
+    padding: 10px;
   }
 
   .closeButton{
@@ -358,7 +380,7 @@ export default {
   .modalVisible {
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
@@ -442,7 +464,7 @@ export default {
 
 
 
-  @media screen and (max-width: 1000px){
+  @media screen and (max-width: 1097px){
     .mainContainer {
       grid-template-columns: 1fr;
       grid-template-rows: repeat(9, 300px);
@@ -450,10 +472,9 @@ export default {
     }
 
     .ideaCloud {
-      border-bottom: 1px solid black;
+      border-top: 1px solid black;
       margin: 20px;
       display:flex;
-
     }
 
     .ideaCloud h2 {
@@ -463,6 +484,8 @@ export default {
     .centreIdea {
       grid-column-start: 1;
       grid-row-start: 1;
+      border: none;
+      color: gold;
     }
   }
 </style>
