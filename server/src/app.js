@@ -15,16 +15,22 @@ db.on('error', (err) => console.log(err))
 db.once('open', () => console.log("Connected to MongoDB..."))
 
 const app = express()
+
 app.use(morgan('combined'))
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors())
 
 let names = require('./model/names')
 
-app.get('/', (req, res) => {
+app.get('/names', (req, res) => {
   names.find({}, (err, names) => {
     res.send(names)
   })
+})
+
+app.post('/names', (req, res) => {
+  console.log(req.params)
 })
 
 app.post('/register', (req, res) => {

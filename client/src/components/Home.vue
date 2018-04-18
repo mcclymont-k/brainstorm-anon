@@ -75,10 +75,14 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { HTTP } from '../services/Api'
+
 export default {
   name: 'Home',
   data() {
     return {
+      name: '',
       showAlert: false,
       addAlert: false,
       closeAlert: false,
@@ -103,11 +107,17 @@ export default {
     };
   },
 
+
   methods: {
 
     openHelpTab() {
       this.helpAlert ? this.helpAlert = false : this.helpAlert = true
-      console.log("hello")
+      console.log(this.name)
+      let nameData = {
+        name: 'Kieran'
+      }
+      HTTP.post('/names', 'name=Kieran')
+      .then(response => console.log(response))
     },
 
     modalOpen() {
@@ -193,8 +203,17 @@ export default {
       const currentIndex = 'infoTab' + index
       return 'infoTab ' + currentIndex
     },
-  }
+  },
+
+  created() {
+    HTTP.get('names')
+    .then((response) => {
+      let nameData = response.data[0]
+      this.name = nameData.title
+    })
+  },
 };
+
 </script>
 
 <style>
