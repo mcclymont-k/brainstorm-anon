@@ -23,18 +23,55 @@ app.use(cors())
 
 
 let names = require('./model/names')
+let brainstorm = require('./model/brainstorm')
 
 app.get('/names', (req, res) => {
   names.find({}, (err, names) => {
     res.send(names)
   })
 })
-app.post('/names', (req, res) => {
-  res.send({
-    message: 'It worked'
+
+app.get('/brainstorm', (req, res) => {
+  brainstorm.find({}, (err, brainstorm) => {
+    res.send(brainstorm)
   })
-  console.log(req.body)
 })
+
+app.post('/brainstorm', (req, res) => {
+  let id = req.body._id
+  console.log(id)
+  let newBrainstorm = new brainstorm(req.body)
+  brainstorm.findOne({_id: id}, (err, foundItem) => {
+    if (foundItem) {
+      foundItem.title = newBrainstorm.title
+      foundItem.subIdeas = newBrainstorm.subIdeas
+      foundItem.sub = newBrainstorm.sub
+      foundItem.index = newBrainstorm.index
+      foundItem.save()
+    } else {
+      newBrainstorm.save()
+    }
+  })
+})
+
+app.post('/names', (req, res) => {
+  let id = {_id: req.body.id}
+  let newName = new names(req.body)
+  console.log(req.body)
+  names.findOne({_id: id}, (err, foundItem) => {
+    if (foundItem) {
+      console.log(foundItem)
+      console.log(newName)
+      foundItem.age = newName.age
+      foundItem.save()
+    } else {
+      newName.save()
+    }
+  })
+})
+
+
+
 
 
 

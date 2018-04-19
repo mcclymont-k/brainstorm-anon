@@ -40,13 +40,15 @@
         <!-- Modal to warn about too many sub ideas -->
         <div class='invisibleModal' v-bind:class="{'lengthModal modalSlide': lengthAlert}">
           <button class='closeButton' v-on:click='modalClose'>X</button>
-          <h1><br/>You may only have 8 arguments per centre idea.<br/><br/> Expand the brainstorm by creating new ideas within each sub idea.</h1>
+          <h1><br/>You may only have 8 arguments per centre idea.<br/><br/>
+            Expand the brainstorm by creating new ideas within each sub idea.</h1>
         </div>
       </div>
       <!--Main container for the brainstorm  -->
       <div class='centreIdea'>
         <button class='simpleButton' v-on:click='modalOpen(); addIdea()'>+</button>
         <button class='simpleButton editButton' v-on:click='modalOpen(); editModalOpen()'>*</button>
+        <button class='simpleButton saveButton' v-on:click='saveButton()'>Save</button>
         <h1>{{this.centreIdea.title}}</h1>
       </div>
       <div v-for="(data, index) in this.centreIdea.subIdeas" class='ideaCloud'>
@@ -58,7 +60,6 @@
               <div v-bind:class='classAdd(index)'>{{data.sub}}</div>
             </div>
           </div>
-
       </div>
       <button v-on:click='goBack' class='backwardsButton'><</button>
       <button v-on:click='openHelpTab' class='helpButton'>?</button>
@@ -82,6 +83,8 @@ export default {
   name: 'Home',
   data() {
     return {
+      num: 0,
+      id: 0,
       name: '',
       showAlert: false,
       addAlert: false,
@@ -98,7 +101,7 @@ export default {
       },
       centreIdea: {
         title: 'Brainstorm-anon',
-        sub: 'sdfgsdfg',
+        sub: '',
         index: 0,
         subIdeas: [
           ]
@@ -110,11 +113,20 @@ export default {
 
   methods: {
 
+    saveButton() {
+      console.log(JSON.stringify(this.centreIdea))
+      console.log(JSON.stringify(this.fakeData))
+      if (this.fakeData.title) {
+        console.log('working...')
+        HTTP.post('brainstorm', this.fakeData)
+      }
+    },
+
     openHelpTab() {
       this.helpAlert ? this.helpAlert = false : this.helpAlert = true
-      console.log(this.name)
-
-      HTTP.post('names', {name: this.name})
+      HTTP.post('names', {id: this.id, title: 'Kieran', age: this.num})
+      this.updateFromDb()
+      this.num += 1
     },
 
     modalOpen() {
@@ -200,15 +212,22 @@ export default {
       const currentIndex = 'infoTab' + index
       return 'infoTab ' + currentIndex
     },
+
+    updateFromDb() {
+      HTTP.get('brainstorm')
+      .then((response) => {
+        if (response.data[0]) {
+          this.fakeData = response.data[0]
+          this.centreIdea = this.fakeData
+        }
+      })
+    },
   },
 
   created() {
-    HTTP.get('names')
-    .then((response) => {
-      let nameData = response.data[0]
-      this.name = nameData.title
-    })
-  },
+    this.updateFromDb()
+  }
+
 };
 
 </script>
@@ -389,6 +408,11 @@ export default {
   .editButton {
     left: 0;
     top: 0;
+  }
+
+  .saveButton {
+    top: auto;
+    bottom: 0;
   }
 
   .modal {

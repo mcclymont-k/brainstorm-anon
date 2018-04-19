@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 let nameSchema = mongoose.Schema({
-  name: String,
+  title: String,
   age: Number
 })
 
