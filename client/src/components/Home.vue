@@ -113,11 +113,8 @@ export default {
     openHelpTab() {
       this.helpAlert ? this.helpAlert = false : this.helpAlert = true
       console.log(this.name)
-      let nameData = {
-        name: 'Kieran'
-      }
-      HTTP.post('/names', 'name=Kieran')
-      .then(response => console.log(response))
+
+      HTTP.post('names', {name: this.name})
     },
 
     modalOpen() {

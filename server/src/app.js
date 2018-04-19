@@ -21,6 +21,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors())
 
+
 let names = require('./model/names')
 
 app.get('/names', (req, res) => {
@@ -28,10 +29,14 @@ app.get('/names', (req, res) => {
     res.send(names)
   })
 })
-
 app.post('/names', (req, res) => {
-  console.log(req.params)
+  res.send({
+    message: 'It worked'
+  })
+  console.log(req.body)
 })
+
+
 
 app.post('/register', (req, res) => {
   res.send({
